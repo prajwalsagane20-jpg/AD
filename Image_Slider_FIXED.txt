@@ -1,0 +1,148 @@
+========== activity_main.xml ==========
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPagerMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>
+
+
+========== item.xml (res > layout > new > layout resource file) ==========
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageViewMain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>
+
+
+========== MainActivity.java ==========
+
+package com.example.myapplication22;
+
+import androidx.appcompat.app.AppCompatActivity;   // ✅ No duplicate imports
+import androidx.viewpager.widget.ViewPager;
+import android.os.Bundle;
+
+public class MainActivity extends AppCompatActivity {
+
+    // ViewPager object
+    ViewPager mViewPager;
+
+    // Images array - add sample_1 to sample_10 in res/drawable folder
+    int[] images = {
+            R.drawable.sample_1, R.drawable.sample_2,
+            R.drawable.sample_3, R.drawable.sample_4,
+            R.drawable.sample_5, R.drawable.sample_6,
+            R.drawable.sample_7, R.drawable.sample_8,
+            R.drawable.sample_9, R.drawable.sample_10
+    };
+
+    // ViewPagerAdapter object
+    ViewPagerAdapter mViewPagerAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize ViewPager
+        mViewPager = (ViewPager) findViewById(R.id.viewPagerMain);
+
+        // Initialize Adapter
+        mViewPagerAdapter = new ViewPagerAdapter(MainActivity.this, images);
+
+        // Set Adapter to ViewPager
+        mViewPager.setAdapter(mViewPagerAdapter);
+    }
+}
+
+
+========== ViewPagerAdapter.java (package > new > class) ==========
+
+package com.example.myapplication22;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
+import androidx.viewpager.widget.PagerAdapter;
+import java.util.Objects;
+
+class ViewPagerAdapter extends PagerAdapter {
+
+    Context context;
+    int[] images;
+    LayoutInflater mLayoutInflater;
+
+    // Constructor
+    public ViewPagerAdapter(Context context, int[] images) {
+        this.context = context;
+        this.images = images;
+        mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount() {
+        return images.length;
+    }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == ((LinearLayout) object);
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+        // Inflate item.xml
+        View itemView = mLayoutInflater.inflate(R.layout.item, container, false);
+
+        // Get ImageView from item.xml
+        ImageView imageView = (ImageView) itemView.findViewById(R.id.imageViewMain);
+
+        // Set image
+        imageView.setImageResource(images[position]);
+
+        // Add view to container
+        Objects.requireNonNull(container).addView(itemView);
+
+        return itemView;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((LinearLayout) object);
+    }
+}
+
+
+========== IMPORTANT: Add these images to res/drawable folder ==========
+sample_1.png
+sample_2.png
+sample_3.png
+sample_4.png
+sample_5.png
+sample_6.png
+sample_7.png
+sample_8.png
+sample_9.png
+sample_10.png
